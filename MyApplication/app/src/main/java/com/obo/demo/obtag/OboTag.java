@@ -30,7 +30,6 @@ public class OboTag extends View {
         canvas.drawCircle(100 , 100,50,new Paint());
 
 
-
     }
 
 
