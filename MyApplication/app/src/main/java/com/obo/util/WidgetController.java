@@ -60,7 +60,7 @@ public class WidgetController {
     public static void setLayout(View view,int x,int y)
     {
         MarginLayoutParams margin=new MarginLayoutParams(view.getLayoutParams());
-        margin.setMargins(x,y, 0, 0);
+        margin.setMargins(x,y, -100, 100);
         RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(margin);
         view.setLayoutParams(layoutParams);
     }

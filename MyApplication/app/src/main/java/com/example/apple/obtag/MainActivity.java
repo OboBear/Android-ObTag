@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.obo.demo.obtag.OboTag;
 import com.obo.util.DisplayUtil;
+import com.obo.util.ScreenUtil;
 import com.obo.util.WidgetController;
 
 import java.util.ArrayList;
@@ -75,30 +76,23 @@ public class MainActivity extends AppCompatActivity {
         };
     }
 
-
     public void initContenViews()
     {
         back_layouts = (RelativeLayout)findViewById(R.id.back_layouts);
 
         for (int i =0; i<alterTagStrings.length ; i++)
         {
-
             OboTag  button = new OboTag(this);
             button.setText(alterTagStrings[i]);
 
             TextPaint paint = button.getPaint();
-//            Rect rect=new Rect();
-//            paint.getTextBounds(alterTagStrings[i],0,alterTagStrings[i].length(), rect);
             float width = paint.measureText(alterTagStrings[i]);
-//            float width = rect.width();
 
             int heightPx= DisplayUtil.dip2px(this, 40);
             int widthPx = DisplayUtil.dip2px(this,width/2 + 20);
 
             button.setLayoutParams(new ViewGroup.LayoutParams(widthPx, heightPx));
             button.setOnClickListener(tagClickListener);
-
-            button.boarderFlag = true;
 
             back_layouts.addView(button);
 
@@ -126,11 +120,10 @@ public class MainActivity extends AppCompatActivity {
 
             button.setLayoutParams(new ViewGroup.LayoutParams(widthPx, heightPx));
             button.setOnClickListener(tagClickListener);
-            button.boarderFlag = false;
             back_layouts.addView(button);
 
-            button.setTextColor(Color.GRAY);
-            button.setBackgroundColor(Color.alpha(0));
+            button.setTextColor(Color.WHITE);
+            button.setBackgroundColor(Color.GRAY);
 
             choosedTagList.add(button);
 
@@ -160,8 +153,19 @@ public class MainActivity extends AppCompatActivity {
 
                 int left = layoutParams.leftMargin;
 
-                WidgetController.setLayout(button, left + lastButton.getLayoutParams().width +20, 20);
+                int top  = layoutParams.topMargin;
+
+                if (left + lastButton.getLayoutParams().width +40 + button.getLayoutParams().width > ScreenUtil.getScreenWidth(this))
+                {
+                    WidgetController.setLayout(button, 20, top+ DisplayUtil.dip2px(this, 40) + 20);
+                }
+                else
+                {
+                    WidgetController.setLayout(button, left + lastButton.getLayoutParams().width +20,top );
+                }
+
             }
+
         }
 
 
@@ -182,7 +186,20 @@ public class MainActivity extends AppCompatActivity {
 
                 int left = layoutParams.leftMargin;
 
-                WidgetController.setLayout(button, left + lastButton.getLayoutParams().width +20, 20+DisplayUtil.dip2px(this, TAG_SET_HEIGHT));
+
+                int top  = layoutParams.topMargin;
+
+                if (left + lastButton.getLayoutParams().width +40 + button.getLayoutParams().width > ScreenUtil.getScreenWidth(this))
+                {
+                    WidgetController.setLayout(button, 20, top+DisplayUtil.dip2px(this, 40) + 20);
+                }
+                else
+                {
+                    WidgetController.setLayout(button, left + lastButton.getLayoutParams().width +20, top);
+                }
+
+
+
             }
         }
     }
@@ -204,8 +221,9 @@ public class MainActivity extends AppCompatActivity {
             else
             {
                 v.setTag(true);
-                ((TextView)v).setTextColor(Color.GRAY);
-                v.setBackgroundColor(Color.alpha(0));
+
+                ((TextView)v).setTextColor(Color.WHITE);
+                v.setBackgroundColor(Color.GRAY);
 
                 choosedTagList.add((OboTag) v);
                 alterTagList.remove(v);
