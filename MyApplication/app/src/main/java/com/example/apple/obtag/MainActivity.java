@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextPaint;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,22 +13,30 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
+import com.obo.demo.obtag.OboTag;
 import com.obo.util.DisplayUtil;
 import com.obo.util.WidgetController;
 
 import java.util.ArrayList;
 import java.util.List;
 
+
 public class MainActivity extends AppCompatActivity {
 
     public static String TAG = MainActivity.class.getCanonicalName();
 
 
+    public static float TAG_SET_HEIGHT = 140f;
+
     private RelativeLayout back_layouts;
 
+    private String []alterTagStrings ;
+    private String []choosedTagStrings ;
 
-    private String []alterTagStrings ;//= new ArrayList<String>();
-    private String []choosedTagStrings ;//= new ArrayList<String>();
+
+
+    private List<OboTag>alterTagList = new ArrayList<OboTag>();
+    private List<OboTag>choosedTagList = new ArrayList<OboTag>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,21 +46,23 @@ public class MainActivity extends AppCompatActivity {
         initPredatas();
 
         initContenViews();
+
+        resetPosition();
     }
 
     private  void initPredatas()
     {
         alterTagStrings = new String[]{
-                "1",
-                "2",
-                "3"
+                "旅游",
+                "电影",
+                "音乐"
         };
 
         choosedTagStrings = new String[]{
-                "4",
-                "5",
-                "6",
-                "7"
+                "美食",
+                "搞笑",
+                "文艺",
+                "古典"
         };
     }
 
@@ -60,39 +71,97 @@ public class MainActivity extends AppCompatActivity {
     {
         back_layouts = (RelativeLayout)findViewById(R.id.back_layouts);
 
-
-
         for (int i =0; i<alterTagStrings.length ; i++)
         {
 
-            Button  button = new Button(this);
+            OboTag  button = new OboTag(this);
             button.setText(alterTagStrings[i]);
-
-            TextPaint paint = button.getPaint();
-            float textLength = paint.measureText(alterTagStrings[i]);
             int heightPx= DisplayUtil.dip2px(this, 40);
-
-
-
-            button.setLayoutParams(new ViewGroup.LayoutParams(120, heightPx));
-            WidgetController.setLayout(button, 120 * i, 80 * i);
-
+            int widthPx = DisplayUtil.dip2px(this,80);
+            button.setLayoutParams(new ViewGroup.LayoutParams(widthPx, heightPx));
             button.setOnClickListener(tagClickListener);
 
             back_layouts.addView(button);
 
-//            button.setBackgroundColor(Color.RED);
+            button.setBackgroundColor(Color.RED);
+            button.setTextColor(Color.WHITE);
+            alterTagList.add(button);
+
+
+            button.setTag(false);
+        }
+
+        for (int i =0; i<choosedTagStrings.length ; i++)
+        {
+
+            OboTag  button = new OboTag(this);
+            button.setText(choosedTagStrings[i]);
+            int heightPx= DisplayUtil.dip2px(this, 40);
+            int widthPx = DisplayUtil.dip2px(this,80);
+            button.setLayoutParams(new ViewGroup.LayoutParams(widthPx, heightPx));
+            button.setOnClickListener(tagClickListener);
+
+            back_layouts.addView(button);
+
+            button.setBackgroundColor(Color.RED);
+            button.setTextColor(Color.WHITE);
+            choosedTagList.add(button);
+
+            button.setTag(true);
+        }
+
+    }
+
+    private void resetPosition()
+    {
+        for (int i=0;i<alterTagList.size();i++)
+        {
+            OboTag button = alterTagList.get(i);
+            TextPaint paint = button.getPaint();
+            int widthPx = DisplayUtil.dip2px(this, 80);
+            WidgetController.setLayout(button, 20 + (20 + widthPx) * i, 20);
         }
 
 
+        for (int i=0;i<choosedTagList.size();i++)
+        {
+            OboTag button = choosedTagList.get(i);
+            TextPaint paint = button.getPaint();
+            int widthPx = DisplayUtil.dip2px(this, 80);
+            WidgetController.setLayout(button, 20 + (20 + widthPx) * i, 20 + DisplayUtil.dip2px(this, TAG_SET_HEIGHT));
+
+        }
 
     }
+
+
+
 
     public View.OnClickListener tagClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
 
+            if ((boolean)v.getTag())
+            {
+                v.setTag(false);
 
+                alterTagList.add((OboTag) v);
+                choosedTagList.remove(v);
+
+            }
+            else
+            {
+                v.setTag(true);
+
+
+                choosedTagList.add((OboTag) v);
+
+
+                alterTagList.remove(v);
+
+            }
+
+            resetPosition();
 
         }
     };
