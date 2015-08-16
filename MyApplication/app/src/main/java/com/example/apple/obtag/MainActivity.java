@@ -1,10 +1,12 @@
 package com.example.apple.obtag;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
@@ -27,14 +29,25 @@ public class MainActivity extends AppCompatActivity {
     {
         back_layouts = (RelativeLayout)findViewById(R.id.back_layouts);
 
-        back_layouts.setBackgroundColor(Color.RED);
-
         Button  button = new Button(this);
+        button.setText("Tag");
+        button.setWidth(80);
+        button.setHeight(40);
+        button.setOnClickListener(tagClickListener);
+        back_layouts.addView(button);
 
 
 
 
     }
 
+    public View.OnClickListener tagClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+
+
+        }
+    };
 
 }
