@@ -15,6 +15,13 @@ public class OboTag extends View {
 
     private Context context;
 
+
+    public OboTag(Context context)
+    {
+        super(context);
+        this.context = context;
+    }
+
     public OboTag(Context context, AttributeSet attrs) {
         super(context, attrs);
 
