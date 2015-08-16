@@ -2,6 +2,7 @@ package com.example.apple.obtag;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextPaint;
@@ -33,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
     private String []alterTagStrings ;
     private String []choosedTagStrings ;
 
-
-
     private List<OboTag>alterTagList = new ArrayList<OboTag>();
     private List<OboTag>choosedTagList = new ArrayList<OboTag>();
 
@@ -59,8 +58,8 @@ public class MainActivity extends AppCompatActivity {
         };
 
         choosedTagStrings = new String[]{
-                "美食",
-                "搞笑",
+                "美食节目",
+                "搞笑233",
                 "文艺",
                 "古典"
         };
@@ -76,8 +75,16 @@ public class MainActivity extends AppCompatActivity {
 
             OboTag  button = new OboTag(this);
             button.setText(alterTagStrings[i]);
+
+            TextPaint paint = button.getPaint();
+//            Rect rect=new Rect();
+//            paint.getTextBounds(alterTagStrings[i],0,alterTagStrings[i].length(), rect);
+            float width = paint.measureText(alterTagStrings[i]);
+//            float width = rect.width();
+
             int heightPx= DisplayUtil.dip2px(this, 40);
-            int widthPx = DisplayUtil.dip2px(this,80);
+            int widthPx = DisplayUtil.dip2px(this,width/2 + 20);
+
             button.setLayoutParams(new ViewGroup.LayoutParams(widthPx, heightPx));
             button.setOnClickListener(tagClickListener);
 
@@ -87,17 +94,25 @@ public class MainActivity extends AppCompatActivity {
             button.setTextColor(Color.WHITE);
             alterTagList.add(button);
 
-
             button.setTag(false);
         }
 
         for (int i =0; i<choosedTagStrings.length ; i++)
         {
-
             OboTag  button = new OboTag(this);
             button.setText(choosedTagStrings[i]);
+            TextPaint paint = button.getPaint();
+
+            Rect rect=new Rect();
+            paint.getTextBounds(choosedTagStrings[i],0,choosedTagStrings[i].length(), rect);
+
+            float width = paint.measureText(choosedTagStrings[i]);
+//            float width = rect.width();
+
+
             int heightPx= DisplayUtil.dip2px(this, 40);
-            int widthPx = DisplayUtil.dip2px(this,80);
+            int widthPx = DisplayUtil.dip2px(this,width/2 + 20 );
+
             button.setLayoutParams(new ViewGroup.LayoutParams(widthPx, heightPx));
             button.setOnClickListener(tagClickListener);
 
@@ -119,7 +134,24 @@ public class MainActivity extends AppCompatActivity {
             OboTag button = alterTagList.get(i);
             TextPaint paint = button.getPaint();
             int widthPx = DisplayUtil.dip2px(this, 80);
+
             WidgetController.setLayout(button, 20 + (20 + widthPx) * i, 20);
+
+            if(i == 0)
+            {
+                WidgetController.setLayout(button, 20, 20);
+            }
+            else
+            {
+                OboTag lastButton = alterTagList.get(i - 1);
+
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) lastButton.getLayoutParams();
+
+                int left = layoutParams.leftMargin;
+
+                WidgetController.setLayout(button, left + lastButton.getLayoutParams().width +20, 20);
+            }
+
         }
 
 
@@ -127,15 +159,23 @@ public class MainActivity extends AppCompatActivity {
         {
             OboTag button = choosedTagList.get(i);
             TextPaint paint = button.getPaint();
-            int widthPx = DisplayUtil.dip2px(this, 80);
-            WidgetController.setLayout(button, 20 + (20 + widthPx) * i, 20 + DisplayUtil.dip2px(this, TAG_SET_HEIGHT));
 
+            if(i == 0)
+            {
+                WidgetController.setLayout(button, 20, 20+DisplayUtil.dip2px(this, TAG_SET_HEIGHT));
+            }
+            else
+            {
+                OboTag lastButton = choosedTagList.get(i - 1);
+
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) lastButton.getLayoutParams();
+
+                int left = layoutParams.leftMargin;
+
+                WidgetController.setLayout(button, left + lastButton.getLayoutParams().width +20, 20+DisplayUtil.dip2px(this, TAG_SET_HEIGHT));
+            }
         }
-
     }
-
-
-
 
     public View.OnClickListener tagClickListener = new View.OnClickListener() {
         @Override
@@ -147,18 +187,13 @@ public class MainActivity extends AppCompatActivity {
 
                 alterTagList.add((OboTag) v);
                 choosedTagList.remove(v);
-
             }
             else
             {
                 v.setTag(true);
 
-
                 choosedTagList.add((OboTag) v);
-
-
                 alterTagList.remove(v);
-
             }
 
             resetPosition();
