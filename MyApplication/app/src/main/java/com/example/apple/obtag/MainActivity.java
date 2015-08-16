@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.obo.demo.obtag.OboTag;
 import com.obo.util.DisplayUtil;
@@ -33,6 +34,15 @@ public class MainActivity extends AppCompatActivity {
 
     private String []alterTagStrings ;
     private String []choosedTagStrings ;
+//    @"#7ecef4", @"#84ccc9", @"#88abda",@"#7dc1dd",@"#b6b8de"
+
+    private int [] tagColors = {
+            Color.parseColor("#7ecef4"),
+            Color.parseColor("#84ccc9"),
+            Color.parseColor("#88abda"),
+            Color.parseColor("#7dc1dd"),
+            Color.parseColor("#b6b8de")
+    };
 
     private List<OboTag>alterTagList = new ArrayList<OboTag>();
     private List<OboTag>choosedTagList = new ArrayList<OboTag>();
@@ -88,9 +98,12 @@ public class MainActivity extends AppCompatActivity {
             button.setLayoutParams(new ViewGroup.LayoutParams(widthPx, heightPx));
             button.setOnClickListener(tagClickListener);
 
+            button.boarderFlag = true;
+
             back_layouts.addView(button);
 
-            button.setBackgroundColor(Color.RED);
+            button.setBackgroundColor(tagColors[new Integer((int) (Math.random() * 100)) % tagColors.length]);
+
             button.setTextColor(Color.WHITE);
             alterTagList.add(button);
 
@@ -107,24 +120,22 @@ public class MainActivity extends AppCompatActivity {
             paint.getTextBounds(choosedTagStrings[i],0,choosedTagStrings[i].length(), rect);
 
             float width = paint.measureText(choosedTagStrings[i]);
-//            float width = rect.width();
 
-
-            int heightPx= DisplayUtil.dip2px(this, 40);
-            int widthPx = DisplayUtil.dip2px(this,width/2 + 20 );
+            int heightPx = DisplayUtil.dip2px(this, 40);
+            int widthPx = DisplayUtil.dip2px(this, width / 2 + 20 );
 
             button.setLayoutParams(new ViewGroup.LayoutParams(widthPx, heightPx));
             button.setOnClickListener(tagClickListener);
-
+            button.boarderFlag = false;
             back_layouts.addView(button);
 
-            button.setBackgroundColor(Color.RED);
-            button.setTextColor(Color.WHITE);
+            button.setTextColor(Color.GRAY);
+            button.setBackgroundColor(Color.alpha(0));
+
             choosedTagList.add(button);
 
             button.setTag(true);
         }
-
     }
 
     private void resetPosition()
@@ -151,7 +162,6 @@ public class MainActivity extends AppCompatActivity {
 
                 WidgetController.setLayout(button, left + lastButton.getLayoutParams().width +20, 20);
             }
-
         }
 
 
@@ -180,10 +190,13 @@ public class MainActivity extends AppCompatActivity {
     public View.OnClickListener tagClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            ((OboTag)v).boarderFlag = (boolean)v.getTag();
             if ((boolean)v.getTag())
             {
                 v.setTag(false);
+
+                ((TextView)v).setTextColor(Color.WHITE);
+                v.setBackgroundColor(tagColors[new Integer((int) (Math.random() * 100)) % tagColors.length]);
 
                 alterTagList.add((OboTag) v);
                 choosedTagList.remove(v);
@@ -191,6 +204,8 @@ public class MainActivity extends AppCompatActivity {
             else
             {
                 v.setTag(true);
+                ((TextView)v).setTextColor(Color.GRAY);
+                v.setBackgroundColor(Color.alpha(0));
 
                 choosedTagList.add((OboTag) v);
                 alterTagList.remove(v);
