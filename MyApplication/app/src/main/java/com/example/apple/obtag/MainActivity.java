@@ -163,11 +163,8 @@ public class MainActivity extends AppCompatActivity {
                 {
                     WidgetController.setLayout(button, left + lastButton.getLayoutParams().width +20,top );
                 }
-
             }
-
         }
-
 
         for (int i=0;i<choosedTagList.size();i++)
         {
